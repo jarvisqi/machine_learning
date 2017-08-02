@@ -54,15 +54,8 @@ def mode_traing():
     # 保存模型，以便重用
     model.save(u"models/xue.model")
 
-    print('finished')
-
 
 def main():
-    # 分词
-    word_Segment()
-    # 模型训练并保存
-    mode_traing()
-
     # 模型使用
     w_model = word2vec.Word2Vec.load(u"models/xue.model")
     siml = w_model.similarity(u"褚禄山", u"胖子")
@@ -70,5 +63,10 @@ def main():
 
 
 if __name__ == '__main__':
+       # 分词
+    word_Segment()
+    # 模型训练并保存
+    mode_traing()
 
     main()
+    print('finished')
