@@ -1,8 +1,5 @@
 import pynlpir
 from ctypes import c_char_p
-import nltk, re, pprint
-import gensim
-from gensim.models.keyedvectors import KeyedVectors
 
 
 def main():
