@@ -42,24 +42,29 @@ def word_segment():
     print("segment finished")
 
 
+
 def mode_training():
     """
     模型训练
     """
+    # 读取文件下下面的文件
+    # sentences = MySentences('/some/directory')
     # 分词数据
     sentences = word2vec.Text8Corpus('data/xuezhong_seg_1.txt')
-    # 训练
+    # 训练 size参数主要是用来设置神经网络的层数
+    # workers参数用于设置并发训练时候的线程数，不过仅当Cython安装的情况
     model = word2vec.Word2Vec(
-        sentences, min_count=20, size=6000, window=10, workers=4)
-    # 计算两个词的相似度/相关程度
-    simil_1 = model.similarity(u"王仙芝", u"老怪物")
-    simil_2 = model.similarity(u"徐凤年", u"殿下")
-    print("【王仙芝】和【老怪物】相似度：", simil_1)
-    print("【徐凤年】和【世子】相似度：", simil_2)
+        sentences, min_count=20, size=4000, window=10, workers=4)
 
-    # 计算某个词的相关词列表
-    lar = model.most_similar(u"徐凤年", topn=20)  # 20个最相关的
-    print("【徐凤年】相关性：", lar)
+    # 计算两个词的相似度/相关程度
+    # simil_1 = model.wv.similarity(u"王仙芝", u"老怪物")
+    # simil_2 = model.wv.similarity(u"徐凤年", u"殿下")
+    # print("【王仙芝】和【老怪物】相似度：", simil_1)
+    # print("【徐凤年】和【世子】相似度：", simil_2)
+
+    # # 计算某个词的相关词列表
+    # lar = model.wv.most_similar(u"徐凤年", topn=20)  # 20个最相关的
+    # print("【徐凤年】相关性：", lar)
 
     # 保存模型，以便重用
     model.save(u"models/xue.model")
@@ -70,7 +75,7 @@ def main():
     # 模型使用
     w_model = word2vec.Word2Vec.load(u"models/xue.model")
     # siml = w_model.similarity(u"褚禄山", u"胖子")
-    sim2 = w_model.similarity(u"大官子", u"曹长卿")
+    sim2 = w_model.wv.similarity(u"大官子", u"曹长卿")
     # print("【褚禄山】和【胖子】相似度：", siml)
     print("【大官子】和【曹长卿】相似度：", sim2)
 
@@ -80,7 +85,7 @@ if __name__ == '__main__':
     # 分词
     # word_segment()
     # 模型训练并保存
-    # mode_training()
+    mode_training()
 
     main()
 

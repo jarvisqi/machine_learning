@@ -18,4 +18,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    # main()
+
+    r=pynlpir._get_pos_name('四川',name='child',english=False) 
+    print(r)
