@@ -4,7 +4,7 @@
 
 ### nlpir 分词工具实例
 
-### pltp 哈工大(ltp) 分词工具实例
+### pyltp 哈工大(ltp) 分词工具实例
 
 ### gensim Word2vec 模型工具包实例
 
