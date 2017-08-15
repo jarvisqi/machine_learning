@@ -10,6 +10,7 @@ from gensim.models import word2vec
 import codecs
 import time
 
+
 # class WordSegment(object):
 #     def __init__(self):
 #         if not nlpir.Init(nlpir.PACKAGE_DIR, nlpir.UTF8_CODE, None):
@@ -37,10 +38,11 @@ def word_segment():
     nlpir.FileProcess('data/xuezhong.txt'.encode("utf-8"),
                       'data/xuezhong_seg_1.txt'.encode("utf-8"), False)
 
-    # key_words = pynlpir.get_key_words(in_text, max_words=20, weighted=True)
-    # print(key_words)
-    print("segment finished")
+    # key_words = pynlpir.get_key_words(in_text, max_words=100, weighted=True)
+    pynlpir.close()
+    print(key_words)
 
+    print("segment finished")
 
 
 def mode_training():
@@ -85,8 +87,10 @@ if __name__ == '__main__':
     # 分词
     # word_segment()
     # 模型训练并保存
-    mode_training()
+    # mode_training()
 
-    main()
+    # main()
 
-    print('finished:', time.time() - s_time)
+    showWordCloud()
+
+    print('finished time span:', time.time() - s_time)

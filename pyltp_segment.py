@@ -16,8 +16,9 @@ def sentence_segmentor(sentence):
     """
     segmentor = Segmentor()
     segmentor.load("F:\\Program\\ltp_data_v3.4.0\\cws.model")
-    words = segmentor.segment(
-        sentence, )  # 分词
+    print("开始分词")
+    words = segmentor.segment(sentence)  # 分词
+    print(words)
     words_list = list(words)
     segmentor.release()  # 释放模型
 
