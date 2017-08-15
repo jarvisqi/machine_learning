@@ -58,7 +58,7 @@ def ner(words, postags):
 
 def main():
     # sentence_splitter()
-    sentence="我家在昆明，我现在在北京上学。中秋节你是否会想到李白？"
+    sentence="为什么我家在昆明，我现在在北京上学。中秋节你是否会想到李白？"
     words_list = sentence_segmentor(sentence)
     postags = sentence_posttagger(words_list)
 

@@ -58,6 +58,9 @@ def mode_training():
     model = word2vec.Word2Vec(
         sentences, min_count=20, size=4000, window=10, workers=4)
 
+
+    # model.sort_vocab()
+
     # 计算两个词的相似度/相关程度
     # simil_1 = model.wv.similarity(u"王仙芝", u"老怪物")
     # simil_2 = model.wv.similarity(u"徐凤年", u"殿下")
@@ -89,8 +92,6 @@ if __name__ == '__main__':
     # 模型训练并保存
     # mode_training()
 
-    # main()
-
-    showWordCloud()
+    main()
 
     print('finished time span:', time.time() - s_time)

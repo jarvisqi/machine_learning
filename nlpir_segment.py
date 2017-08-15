@@ -9,8 +9,9 @@ def main():
     text = '弗洛米iPhone7/7plus手机壳/保护套苹果7plus超薄全包硅胶透明电镀软壳5.5英寸炫亮黑☆炫亮电镀'
     r_out = pynlpir.segment(text, pos_english=False)
     key_words = pynlpir.get_key_words(text, weighted=True)
-    pynlpir.close()
 
+    pynlpir.close()
+    print(key_words)
     for x in r_out:
         print(x)
 
@@ -18,7 +19,4 @@ def main():
 
 
 if __name__ == '__main__':
-    # main()
-
-    r=pynlpir._get_pos_name('四川',name='child',english=False) 
-    print(r)
+    main()
