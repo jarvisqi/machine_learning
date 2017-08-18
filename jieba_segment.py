@@ -78,6 +78,8 @@ def show_wordCloud(word_freq):
     plt.show()
     wcloud.to_file("data/wcimage/三体词云_3.png")
 
+
+
 if __name__ == '__main__':
     jieba_segment()
 

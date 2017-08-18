@@ -1,5 +1,17 @@
+import codecs
 from pyltp import SentenceSplitter, Segmentor, Postagger, NamedEntityRecognizer
+import pandas as pd
+import numpy as np
+from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
+import matplotlib
+import matplotlib.pyplot as plt
+from scipy.misc import imread
+matplotlib.rcParams['figure.figsize'] = (10.0, 5.0)
 
+
+LTP_DATA_DIR = 'F:\\Program\\ltp_data_v3.4.0\\'  # ltp模型目录的路径
+st_text = codecs.open('data/st.txt', 'r', encoding='UTF-8').read()
+xz_text = codecs.open('data/xuezhong.txt', 'r', encoding='UTF-8').read()
 
 def sentence_splitter():
     """
@@ -18,9 +30,19 @@ def sentence_segmentor(sentence):
     segmentor.load("F:\\Program\\ltp_data_v3.4.0\\cws.model")
     print("开始分词")
     words = segmentor.segment(sentence)  # 分词
-    print(words)
+    # print(words)
     words_list = list(words)
     segmentor.release()  # 释放模型
+
+    # 分词写入到文件
+    # with open("data/xz_seg_ltp.txt", "a", encoding='UTF-8') as f:
+    #     f.write(" ".join(words_list))
+    
+       # 分词写入到文件
+    with open("data/st_seg_ltp.txt", "a", encoding='UTF-8') as f:
+        f.write(" ".join(words_list))
+
+    print("分词完成")
 
     return words_list
 
@@ -58,11 +80,38 @@ def ner(words, postags):
 
 def main():
     # sentence_splitter()
-    sentence="为什么我家在昆明，我现在在北京上学。中秋节你是否会想到李白？"
-    words_list = sentence_segmentor(sentence)
-    postags = sentence_posttagger(words_list)
+    # xz_words_list = sentence_segmentor(xz_text)
+    st_words_list = sentence_segmentor(st_text)
 
-    ner(words_list,postags)
+    # postags = sentence_posttagger(words_list)
+
+    # ner(words_list,postags)
+
+
+
+def show_wordCloud(word_freq):
+    """
+    词云显示
+    """
+    font = r'C:\Windows\Fonts\msyh.ttc'  # 指定字体，不指定会报错
+    color_mask = imread("resource/timg.jpg")  # 读取背景图片
+    wcloud = WordCloud(
+        font_path=font,
+        # 背景颜色
+        background_color="white",
+        # 词云形状
+        mask=color_mask,
+        # 允许最大词汇
+        max_words=2000,
+        # 最大号字体
+        max_font_size=80)
+
+    wcloud.generate_from_frequencies(dict(word_freq))
+    # 以下代码显示图片
+    plt.imshow(wcloud)
+    plt.axis("off")
+    plt.show()
+    wcloud.to_file("data/wcimage/三体词云_3.png")
 
 
 if __name__ == '__main__':
