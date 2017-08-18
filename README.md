@@ -6,6 +6,8 @@
 
 ### pyltp 哈工大(ltp) 分词工具实例
 
+### jieba  分词工具实例
+
 ### gensim Word2vec 模型工具包实例
 
 ### wordcloud 词云使用
