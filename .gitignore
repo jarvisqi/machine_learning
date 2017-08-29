@@ -98,6 +98,6 @@ ENV/
 /site
 
 # mypy
-.mypy_cache/
 .vscode/
 models/
+data/
