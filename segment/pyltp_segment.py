@@ -11,7 +11,7 @@ matplotlib.rcParams['figure.figsize'] = (10.0, 5.0)
 
 LTP_DATA_DIR = 'F:\\Program\\ltp_data_v3.4.0\\'  # ltp模型目录的路径
 st_text = codecs.open('data/origin/st.txt', 'r', encoding='UTF-8').read()
-xz_text = codecs.open('data/xuezhong.txt', 'r', encoding='UTF-8').read()
+xz_text = codecs.open('data/origin/xuezhong.txt', 'r', encoding='UTF-8').read()
 
 def sentence_splitter():
     """
@@ -115,4 +115,12 @@ def show_wordCloud(word_freq):
 
 
 if __name__ == '__main__':
-    main()
+    # main()
+    segmentor = Segmentor()
+    segmentor.load("F:\\Program\\ltp_data_v3.4.0\\cws.model")
+    words = segmentor.segment("韩国 OLENS 奥伦斯清纯超自然巧克力225度韩国 OLENS   teen teen natural choco ")  # 分词
+    # print(words)
+    words_list = list(words)
+    print(words_list)
+
+

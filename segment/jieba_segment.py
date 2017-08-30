@@ -14,7 +14,6 @@ matplotlib.rcParams['figure.figsize'] = (10.0, 5.0)
 st_text = codecs.open('data/origin/st.txt', 'r', encoding='UTF-8').read()
 jieba.dt.add_word("章北海")
 jieba.dt.add_word("黑暗森林")
-/
 def jieba_segment():
     """
     分词
@@ -81,6 +80,13 @@ def show_wordCloud(word_freq):
 
 
 if __name__ == '__main__':
-    jieba_segment()
+    # jieba_segment()
 
-    jieba_keywords()
+    # jieba_keywords()
+
+    word_list = jieba.cut("韩国 OLENS 奥伦斯清纯超自然巧克力225度韩国 OLENS   teen teen natural choco ", cut_all=False)
+    print(word_list)
+    rss = ''
+    for each in word_list:
+        rss = rss + each + ' / '
+    print(rss)
