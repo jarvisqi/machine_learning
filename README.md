@@ -11,3 +11,5 @@
 ### gensim Word2vec 模型工具包实例
 
 ### wordcloud 词云使用
+
+### Keras LSTM RNN CNN 等神经网络使用
