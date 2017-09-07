@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import codecs
 from pyltp import SentenceSplitter, Segmentor, Postagger, NamedEntityRecognizer
 import pandas as pd
@@ -117,8 +119,8 @@ def show_wordCloud(word_freq):
 if __name__ == '__main__':
     # main()
     segmentor = Segmentor()
-    segmentor.load("F:\\Program\\ltp_data_v3.4.0\\cws.model")
-    words = segmentor.segment("韩国 OLENS 奥伦斯清纯超自然巧克力225度韩国 OLENS   teen teen natural choco ")  # 分词
+    segmentor.load_with_lexicon("F:\\Program\\ltp_data_v3.4.0\\cws.model", '/data/origin/dict.csv') 
+    words = segmentor.segment("正品膳魔师经典超轻新款保温杯500ml JNL-502-SKY 天空蓝色新款正品膳魔师经典超轻新款保温杯500ml JNL-502-SKY 天空蓝色新款正品膳魔师经典超轻新款保温杯500ml JNL-502-SKY 天空蓝色新款正品膳魔师经典超轻新款保温杯500ml JNL-502-SKY 天空蓝色新款正品膳魔师经典超轻新款保温杯500ml JNL-502-SKY 天空蓝色新款")  # 分词
     # print(words)
     words_list = list(words)
     print(words_list)

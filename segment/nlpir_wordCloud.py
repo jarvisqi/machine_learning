@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import codecs
 from ctypes import c_char_p
 import pandas as pd

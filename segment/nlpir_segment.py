@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import pynlpir
 from ctypes import c_char_p
 import codecs

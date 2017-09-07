@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import codecs
 import jieba
 from jieba.analyse import extract_tags

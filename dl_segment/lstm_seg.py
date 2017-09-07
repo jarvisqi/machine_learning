@@ -1,8 +1,13 @@
 # -*- coding:utf-8 -*-
 import re
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 import numpy as np
 import pandas as pd
+from keras.layers import Dense, Embedding, LSTM, TimeDistributed, Input, Bidirectional
+from keras.models import Sequential, Model,load_model
 from keras.models import load_model
+
 
 
 s = open('data/training/msr_train.txt').read()
@@ -47,7 +52,6 @@ d['label'] = labels
 d = d[d['data'].apply(len) <= maxlen]
 d.index = range(len(d))
 tag = pd.Series({'s': 0, 'b': 1, 'm': 2, 'e': 3, 'x': 4})
-print(data)
 
 chars = []  # 统计所有字，跟每个字编号
 for i in data:
@@ -57,27 +61,31 @@ chars = pd.Series(chars).value_counts()
 chars[:] = range(1, len(chars) + 1)
 
 
-# #生成适合模型输入的格式
-# from keras.utils import np_utils
-# d['x'] = d['data'].apply(lambda x: np.array(list(chars[x])+[0]*(maxlen-len(x))))
-# d['y'] = d['label'].apply(lambda x: np.array(map(lambda y:np_utils.to_categorical(y,5), tag[x].reshape((-1,1)))+[np.array([[0,0,0,0,1]])]*(maxlen-len(x))))
+#生成适合模型输入的格式
+from keras.utils import np_utils
+d['x'] = d['data'].apply(lambda x: np.array(list(chars[x])+[0]*(maxlen-len(x))))
+d['y'] = d['label'].apply(lambda x: np.array(list(map(lambda y:np_utils.to_categorical(y,5), tag[x].values.reshape((-1,1))))+[np.array([[0,0,0,0,1]])]*(maxlen-len(x))))
 
-# #设计模型
-# word_size = 128
-# maxlen = 32
-# from keras.layers import Dense, Embedding, LSTM, TimeDistributed, Input, Bidirectional
-# from keras.models import Model,load_model
+#设计模型
+word_size = 128
+maxlen = 32
 
-# sequence = Input(shape=(maxlen,), dtype='int32')
-# embedded = Embedding(len(chars)+1, word_size, input_length=maxlen, mask_zero=True)(sequence)
-# blstm = Bidirectional(LSTM(64, return_sequences=True), merge_mode='sum')(embedded)
-# output = TimeDistributed(Dense(5, activation='softmax'))(blstm)
-# model = Model(input=sequence, output=output)
-# model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+sequence = Input(shape=(maxlen,), dtype='int32')
+embedded = Embedding(len(chars)+1, word_size, input_length=maxlen, mask_zero=True)(sequence)
+blstm = Bidirectional(LSTM(64, return_sequences=True), merge_mode='sum')(embedded)
+output = TimeDistributed(Dense(5, activation='softmax'))(blstm)
+model = Model(input=sequence, output=output)
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-# batch_size = 512
-# history = model.fit(np.array(list(d['x'])), np.array(list(d['y'])).reshape((-1,maxlen,5)), batch_size=batch_size, nb_epoch=30)
+
+
+
+# print("training start")
+# batch_size = 1024
+# hist = model.fit(np.array(list(d['x'])), np.array(list(d['y'])).reshape((-1,maxlen,5)), batch_size=batch_size, nb_epoch=50)
 # print("training end")
+# print(hist.history)  # model.fit在运行结束后返回一个History对象，其中含有的history属性包含了训练过程中损失函数的值以及其他度量指标。
+# model.save("data/models/lstm_seg.h5")
 
 
 # 利用 labels（即状态序列）来统计转移概率
@@ -141,7 +149,7 @@ def viterbi(nodes):
 
 def simple_cut(strtext):
     if strtext:
-        model = load_model("data/models/rnn_seg.h5")
+        model = load_model("data/models/lstm_seg.h5")
         x_test = [list(chars[list(strtext)].fillna(0).astype(int)) + [0] * (maxlen - len(strtext))]
         r = model.predict(np.array(x_test), verbose=False)[0][:len(strtext)]
         r = np.log(r)
@@ -173,8 +181,7 @@ def cut_word(strtext):
 
 def main():
     # strtext="人们思考问题往往不是从零开始的。就好像你现在阅读这篇文章一样，你对每个词的理解都会依赖于你前面看到的一些词"
-    # strtext="在基于tensorflow的keras中,其会自动检测运行的机器中是否有gpu,如果有的话,其会自动在gpu上执行运算。"
-    strtext = "京品兴运日本花王拉拉裤xl50花王训练裤xl50花王尿不湿xl50花王xl50花王拉拉裤xl训练裤xl花王xl"
+    strtext="京品兴运日本尤妮佳纸尿裤s84尤妮佳尿不湿s84尤妮佳s84尤妮佳纸尿裤s尤妮佳尿不湿s纸尿裤s尤妮佳s"
     result = cut_word(strtext)
     rss = ''
     for each in result:
