@@ -172,7 +172,7 @@ def predictData():
     使用模型预测真实数据
     
     """
-    input_texts = ["不好，太贵花了190元。","太贵了","好评","服务态度好","差评，不要买","发货速度超级快！","一般吧， 价格还不便宜，其他的也就一般"]
+    input_texts = ["价格不便宜，花了190元。","太贵了","好评","服务态度好","差评，不要买","发货速度超级快！","一般吧， 价格还不便宜"]
     
     combined = [jieba.lcut(document.replace('\n', ''))for document in input_texts]
     word_model = word2vec.Word2Vec.load('./data/text/Word2vec_model.model')
