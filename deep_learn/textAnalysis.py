@@ -21,12 +21,10 @@ import sys
 sys.setrecursionlimit(1000000)
 
 # set parameters:
-vocab_dim = 100
-maxlen = 128
-n_iterations = 1  # ideally more..
-n_exposures = 10
+vocab_dim = 128
+maxlen = 120
 window_size = 7
-batch_size = 32
+batch_size = 256
 cpu_count = multiprocessing.cpu_count()
 
 
@@ -97,8 +95,8 @@ def create_dictionaries(model=None, combined=None):
 # 创建词语字典，并返回每个词语的索引，词向量，以及每个句子所对应的词语索引
 def word2vec_train(text):
 
-    model = word2vec.Word2Vec(size=vocab_dim, min_count=n_exposures, window=window_size, workers=cpu_count,
-                              iter=n_iterations)
+    model = word2vec.Word2Vec(size=vocab_dim, min_count=10, window=window_size, workers=cpu_count,
+                              iter=1)
     model.build_vocab(text)
     model.train(text, total_examples=model.corpus_count, epochs=model.iter)
     model.save('./data/text/Word2vec_model.model')
@@ -110,8 +108,7 @@ def word2vec_train(text):
 def get_data(index_dict, word_vectors, inputTexts, y):
 
     input_dim = len(index_dict) + 1              # 所有单词的索引数，频数小于10的词语索引为0，所以加1
-    x_train, x_test, y_train, y_test = train_test_split(
-        inputTexts, y, test_size=0.2)
+    x_train, x_test, y_train, y_test = train_test_split(inputTexts, y, test_size=0.1)
     print(x_train.shape, y_train.shape)
 
     return input_dim, x_train, y_train, x_test, y_test
@@ -129,19 +126,23 @@ def train_lstm(input_dim, x_train, y_train, x_test, y_test):
     # model.add(Dropout(0.5))
     # model.add(Dense(1))
     # model.add(Activation('sigmoid'))
-
-    model.add(Embedding(input_dim=input_dim, output_dim=vocab_dim, mask_zero=True, input_length=maxlen))
-    model.add(LSTM(64, activation="sigmoid"))
-    model.add(Dense(64, input_shape=(input_dim,),activation='sigmoid'))    
-    model.add(Dropout(0.25))                    # Dropout层用于防止过拟合。
+    print(input_dim)
+    model.add(Embedding(input_dim, vocab_dim, mask_zero=True, input_length=maxlen))
+    model.add(LSTM(128, activation="sigmoid",dropout=0.25,recurrent_dropout=0.25))
+    model.add(Dense(64,activation='sigmoid'))
+    model.add(Dropout(0.25))
     model.add(Dense(32,activation='sigmoid'))
     model.add(Dropout(0.25))
     model.add(Dense(16,activation='sigmoid'))
     model.add(Dropout(0.25))
     model.add(Dense(1,activation="sigmoid"))
 
+
+    # Test score: 0.263636458462
+    # Test accuracy: 0.916153483767
+
     print('编译模型...')   # 使用 adam优化
-    sgd = Adam(lr=0.001)
+    sgd = Adam(lr=0.003)
     model.compile(loss='binary_crossentropy', optimizer=sgd, metrics=['accuracy'])
 
     print("训练...")
@@ -182,7 +183,7 @@ def predictData():
     使用模型预测真实数据
 
     """
-    input_texts = ["价格不便宜，花了190元。", "太贵了", "好评",
+    input_texts = ["价格不便宜，花了190元。", "垃圾", "东西很好，超值",
                    "服务态度好", "差评，不要买", "发货速度超级快！", "一般吧， 价格还不便宜"]
 
     texts = [jieba.lcut(document.replace('\n', '')) for document in input_texts]
@@ -208,6 +209,6 @@ def predictData():
 
 if __name__ == '__main__':
     
-    train()
+    # train()
 
-    # predictData()
+    predictData()
