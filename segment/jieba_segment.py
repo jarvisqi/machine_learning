@@ -37,7 +37,7 @@ def jieba_keywords():
     # 停用词
     stopwords = pd.read_csv("data/origin/stop_words.txt", index_col=False,
                             quoting=3, sep="\n", names=['stopword'], encoding='utf-8')
-    words = [word for word, wegiht in key_words]
+    words = [word for word, weight in key_words]
     keywords_df = pd.DataFrame({'keywords': words})    
 
     # 去掉停用词
