@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 from scipy.misc import imread
 matplotlib.rcParams['figure.figsize'] = (10.0, 5.0)
 
-
+# pip install python-Levenshtein==0.12.0
 xz_text = codecs.open('data/xuezhong.txt', 'r', encoding='UTF-8').read()
 jieba.dt.add_word("剑神")
 jieba.dt.add_word("李淳罡")
