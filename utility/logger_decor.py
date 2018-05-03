@@ -12,30 +12,28 @@ def create_logger():
     filename = time.strftime(isotimeformat, time.localtime(time.time()))
     handler = logging.FileHandler("./logs/{}.txt".format(filename))
     handler.setLevel(logging.INFO)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
     return logger
 
 
-def exception(logger):
+def exception(func):
     """
     异常装饰器
     @param logger: The logging object
     """
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except:
+            logger = create_logger()
+            err = "There was an exception in  "
+            err += func.__name__
+            logger.exception(err)
 
-    def decorator(func):
+            raise
 
-        def wrapper(*args, **kwargs):
-            try:
-                return func(*args, **kwargs)
-            except:
-                err = "There was an exception in  "
-                err += func.__name__
-                logger.exception(err)
-
-        return wrapper
-
-    return decorator
-
+    return wrapper

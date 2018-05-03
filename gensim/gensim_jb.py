@@ -1,4 +1,3 @@
-import pynlpir
 from ctypes import c_char_p
 import jieba
 from jieba.analyse import extract_tags
@@ -120,14 +119,16 @@ def show_wordCloud(word_freq):
     wcloud.to_file("data/wcimage/雪中_1.png")
 
 if __name__ == '__main__':
-    s_time = time.time()
-    # 分词
-    word_segment()
+    # s_time = time.time()
+    # # 分词
+    # word_segment()
 
-    xz_keywords()
-    # 模型训练并保存
-    # mode_training()
+    # xz_keywords()
+    # # 模型训练并保存
+    # # mode_training()
 
-    # main()
+    # # main()
 
-    print('finished time span:', time.time() - s_time)
+    # print('finished time span:', time.time() - s_time)
+
+
