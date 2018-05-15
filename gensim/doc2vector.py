@@ -114,18 +114,18 @@ def similarity(a_vect, b_vect):
         [type] -- [description]
     """
 
-    dot_product = 0.0
-    normA = 0.0
-    normB = 0.0
+    dot_val = 0.0
+    a_norm = 0.0
+    b_norm = 0.0
     cos = None
     for a, b in zip(a_vect, b_vect):
-        dot_product += a*b
-        normA += a**2
-        normB += b**2
-    if normA == 0.0 or normB == 0.0:
+        dot_val += a*b
+        a_norm += a**2
+        b_norm += b**2
+    if a_norm == 0.0 or b_norm == 0.0:
         cos = -1
     else:
-        cos = dot_product / ((normA*normB)**0.5)
+        cos = dot_val / ((a_norm*b_norm)**0.5)
 
     return cos
 
