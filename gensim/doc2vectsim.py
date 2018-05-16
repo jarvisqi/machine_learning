@@ -1,32 +1,38 @@
-# -*- coding: utf-8 -*-
-import codecs
+# -*- coding: UTF-8 -*-
 import re
-from os import listdir
-from os.path import join
+import sys
 
-import gensim
 import jieba
 import numpy as np
 import pandas as pd
+import gensim
 
 
-def doc_segment():
-    """分词保存
+def increment_train():
+    """增量训练
     """
+    print("load model")
+    model = gensim.models.Doc2Vec.load('./models/doc2vec.model')
 
-    # 先把所有文档的路径存进一个 array 中，docLabels：
-    data_dir = "./data/corpus"
-    docLabels = [f for f in listdir(data_dir) if f.endswith('.txt')]
-
+    df_data = pd.read_excel("./data/new_prd.xlsx", names=["SysNo", "Title", "Content"])
     data = []
-    for doc in docLabels:
-        try:
-            ws = codecs.open(data_dir + "/" + doc).read()
-            doc_words = segment(ws)
-            with codecs.open("data/corpus_words/{}".format(doc), "a", encoding="UTF-8") as f:
-                f.write(" ".join(doc_words))
-        except:
-            print(doc)
+    docLabels = []
+    idx_dic = {}
+    for idx, row in df_data.iterrows():
+        seg_title = segment(row.Title)
+        seg_content = segment(row.Content)
+        data.append(' '.join((seg_title+seg_content)))
+        docLabels.append(' '.join(seg_title))
+
+    print(len(data))
+    # 训练 Doc2Vec，并保存模型：
+    sentences = LabeledLineSentence(data, docLabels)
+    model.build_vocab(sentences, update=True)
+    print("开始训练...")
+    model.train(sentences, total_examples=model.corpus_count, epochs=model.epochs)
+    model.save("./models/doc2vec_v1.model")
+    print("model saved")
+
 
 def segment(doc: str):
     """中文分词
@@ -37,7 +43,7 @@ def segment(doc: str):
         [type] -- [description]
     """
     # 停用词
-    stop_words = pd.read_csv("./data/stopwords_TUH.txt", index_col=False, quoting=3,
+    stop_words=pd.read_csv("./data/stopwords_TUH.txt", index_col = False, quoting = 3,
                              names=['stopword'],
                              sep="\n",
                              encoding='utf-8')
@@ -56,34 +62,6 @@ def segment(doc: str):
     segments = out_str.split(sep=" ")
 
     return segments
-
-
-def train():
-    """训练 Doc2Vec 模型
-    """
-
-    # 先把所有文档的路径存进一个 array中，docLabels：
-    data_dir = "./data/corpus_words"
-    docLabels = [f for f in listdir(data_dir) if f.endswith('.txt')]
-
-    data = []
-    for doc in docLabels:
-        ws = open(data_dir + "/" + doc, 'r', encoding='UTF-8').read()
-        data.append(ws)
-
-    print(len(data))
-    # 训练 Doc2Vec，并保存模型：
-    sentences = LabeledLineSentence(data, docLabels)
-    # an empty model
-    model = gensim.models.Doc2Vec(vector_size=256, window=10, min_count=5,
-                                  workers=4, alpha=0.025, min_alpha=0.025, epochs=12)
-    model.build_vocab(sentences)
-    print("开始训练...")
-    model.train(sentences, total_examples=model.corpus_count, epochs=12)
-    
-    model.save("./models/doc2vec.model")
-    print("model saved")
-
 
 def test_model():
     print("load model")
@@ -105,6 +83,8 @@ def test_model():
     print(sys.getsizeof(vect2))
 
     cos = similarity(vect1, vect2)
+
+
     print("相似度：{:.4f}".format(cos))
 
 
@@ -165,13 +145,18 @@ class LabeledLineSentence(object):
 
     def __iter__(self):
         for idx, doc in enumerate(self.doc_list):
-            yield gensim.models.doc2vec.LabeledSentence(words=doc.split(), tags=[self.labels_list[idx]])
+            try:
+                yield gensim.models.doc2vec.LabeledSentence(words=doc.split(), tags=[self.labels_list[idx]])
+            except:
+                print(doc)
 
 
 if __name__ == '__main__':
-    
-    # doc_segment()
+    # increment_train()
 
-    # train()
-
-    test_model()
+    # test_model()
+    result_dict = {1: 2, 4: 1, 6: 0.5}
+    items = result_dict.items()
+    backitems = [[v[1], v[0]] for v in items]
+    backitems.sort()
+    print(backitems[0])
